@@ -1,0 +1,15 @@
+.datetime {
+    text-align: center;
+    margin-top: 10%;
+}
+
+.time {
+    font-size: 5em;
+    font-weight: bold;
+}
+
+.date {
+    font-size: 2em;
+    opacity: 0.7;
+    margin-top: 1em;
+}
