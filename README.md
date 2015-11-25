@@ -38,4 +38,4 @@ Abra o link pelo seu celular, usando o IP do seu computador e escolha a APK gera
 
 # Testando no ilab
 
-    ionic serve --ilab
+    ionic serve --lab

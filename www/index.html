@@ -37,7 +37,7 @@
           <div class="date" current-time="dd/MM/yyyy"></div>
         </div>
       </div>
-      <div ng-controller="LocationTracker">
+      <div ng-controller="PositionTracker">
         <div class="row">
           <div class="row header">
             <div class="col">Data</div>
@@ -45,11 +45,11 @@
             <div class="col">Longitude</div>
           </div>
         </div>
-        <div class="row" ng-repeat="location in getLocations()">
+        <div class="row" ng-repeat="position in getPositions()">
           <div class="row">
-            <div class="col">{{ location.datetime|date: "dd/MM/yyyy HH:mm:ss" }}</div>
-            <div class="col">{{ location.latitude }}</div>
-            <div class="col">{{ location.longitude }}</div>
+            <div class="col">{{ position.datetime|date: "dd/MM/yyyy HH:mm:ss" }}</div>
+            <div class="col">{{ position.latitude }}</div>
+            <div class="col">{{ position.longitude }}</div>
           </div>
         </div>
       </div>

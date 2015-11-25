@@ -1,43 +1,49 @@
 var app = angular.module('gpstracker', ['ionic', 'ngCordova']);
 
 app.controller('GPSTracker', function($scope){
-  $scope.CurrentDate = new Date();
-  $scope.Locations = [];
+    $scope.CurrentDate = new Date();
+    $scope.Positions = [];
+    $scope.RefreshTime = 3 * 1000 * 60; // 3 minutos
 });
 
-app.controller('LocationTracker', function($scope, $cordovaGeolocation, $ionicLoading){
-     ionic.Platform.ready(function(){
-        $ionicLoading.show({
-            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Inicializando!'
-        });
-     });
+app.controller('PositionTracker', function($scope, $cordovaGeolocation, $ionicLoading){
+    var controller = this;
 
-     function getLocation(){
+    controller.savePosition = function(position){
+        $scope.Positions.push({
+            'datetime': new Date(),
+            'latitude': position.coords.latitude,
+            'longitude': position.coords.longitude
+        });
+    }
+
+    controller.updatePosition = function(){
         var options = {timeout: 10000, enableHighAccuracy: true};
 
         $cordovaGeolocation.getCurrentPosition(options).then(function(position){
-            $scope.Locations.push({
-                'datetime': new Date(),
-                'latitude': position.coords.latitude,
-                'longitude': position.coords.longitude
-            });
-            console.log($scope.Locations);
+            controller.savePosition(position);
             $ionicLoading.hide();
         }, function(error){
             $ionicLoading.hide();
             console.log(error);
-            console.log("Could not get location");
         });
 
-        setTimeout(getLocation, 5000);
-     }
+        setTimeout(controller.updatePosition, $scope.RefreshTime);
+    }
 
-    $scope.getLocations = function(){
-        return $scope.Locations.concat().reverse().slice(0, 6);
-    };
 
-    getLocation();
+    ionic.Platform.ready(function(){
+        $ionicLoading.show({
+            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Inicializando!'
+        });
 
+        $scope.getPositions = function(){
+            return $scope.Positions.concat().reverse().slice(0, 6);
+        };
+
+        controller.updatePosition();
+
+    });
 });
 
 
