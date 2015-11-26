@@ -19,6 +19,7 @@ Configurações gerais para versões antigas.
 
     `bower install`
     `npm install`
+    `cordova plugin add https://github.com/litehelpers/Cordova-sqlite-storage.git`
 
 
 # Instalando APK

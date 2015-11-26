@@ -6,7 +6,7 @@ app.controller('GPSTracker', function($scope){
     $scope.RefreshTime = 3 * 1000 * 60; // 3 minutos
 });
 
-app.controller('PositionTracker', function($scope, $cordovaGeolocation, $ionicLoading){
+app.controller('PositionTracker', function($scope, $cordovaGeolocation, $ionicLoading, $timeout){
     var controller = this;
 
     controller.savePosition = function(position){
@@ -28,7 +28,7 @@ app.controller('PositionTracker', function($scope, $cordovaGeolocation, $ionicLo
             console.log(error);
         });
 
-        setTimeout(controller.updatePosition, $scope.RefreshTime);
+        $timeout(controller.updatePosition, $scope.RefreshTime);
     }
 
 
