@@ -1,11 +1,11 @@
 var db;
 
 function intializeDB(){
+    /* When is browser should use openDatabase instead
+       of cordovaSQLite.opendDB */
     if (window.cordova) {
-        //device
         return $cordovaSQLite.openDB({ name: "positions.db" });
     } else {
-         // browser
         return window.openDatabase("positions.db", '1', 'positions', 1024 * 1024 * 100);
     }
 }
@@ -22,7 +22,7 @@ var app = angular.module('gpstracker', ['ionic', 'ngCordova'])
             }
 
             db = intializeDB();
-            $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS positions (id integer primary key, latitude text, longitude text, datetime text)");
+            $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS positions (datetime text primary key, latitude text, longitude text)");
         });
     });
 
@@ -39,10 +39,11 @@ app.controller('PositionTracker', function($scope, $cordovaGeolocation, dateFilt
 
     controller.savePosition = function(position){
         var formattedDate = dateFilter(new Date(), "dd/MM/yyyy HH:mm:ss");
+
         $cordovaSQLite.execute(
             db,
-            "INSERT INTO positions (latitude, longitude, datetime) VALUES (?, ?, ?)",
-            [position.coords.latitude, position.coords.longitude, formattedDate]
+            "INSERT OR REPLACE INTO positions (datetime, latitude, longitude) VALUES (?, ?, ?)",
+            [formattedDate, position.coords.latitude, position.coords.longitude]
         )
 
         $scope.Positions.push({
