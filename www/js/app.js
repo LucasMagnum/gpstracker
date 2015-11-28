@@ -10,6 +10,25 @@ function intializeDB(){
     }
 }
 
+function initializeTables($cordovaSQLite, db){
+    var tables = {
+        'positions': {
+            'fields': ['datetime text primary key', 'latitude text', 'longitude text']
+        },
+    }
+
+    for (table_name in tables){
+        var table = tables[table_name];
+        var fields_sql = table.fields.join();
+        var sql = "CREATE TABLE IF NOT EXISTS " + table_name + "(" + fields_sql + ")";
+
+        $cordovaSQLite.execute(db, sql);
+    }
+
+}
+
+
+
 
 var app = angular.module('gpstracker', ['ionic', 'ngCordova'])
     .run(function($ionicPlatform, $cordovaSQLite) {
@@ -22,7 +41,7 @@ var app = angular.module('gpstracker', ['ionic', 'ngCordova'])
             }
 
             db = intializeDB();
-            $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS positions (datetime text primary key, latitude text, longitude text)");
+            initializeTables($cordovaSQLite, db);
         });
     });
 
