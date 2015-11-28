@@ -1,4 +1,32 @@
-var app = angular.module('gpstracker', ['ionic', 'ngCordova']);
+var db;
+
+function intializeDB(){
+    if (window.cordova) {
+        //device
+        return $cordovaSQLite.openDB({ name: "positions.db" });
+    } else {
+         // browser
+        return window.openDatabase("positions.db", '1', 'positions', 1024 * 1024 * 100);
+    }
+}
+
+
+var app = angular.module('gpstracker', ['ionic', 'ngCordova'])
+    .run(function($ionicPlatform, $cordovaSQLite) {
+        $ionicPlatform.ready(function() {
+            if(window.cordova && window.cordova.plugins.Keyboard) {
+                cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+            }
+            if(window.StatusBar) {
+                StatusBar.styleDefault();
+            }
+
+            db = intializeDB();
+            $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS positions (id integer primary key, latitude text, longitude text, datetime text)");
+        });
+    });
+
+
 
 app.controller('GPSTracker', function($scope){
     $scope.CurrentDate = new Date();
@@ -6,10 +34,17 @@ app.controller('GPSTracker', function($scope){
     $scope.RefreshTime = 3 * 1000 * 60; // 3 minutos
 });
 
-app.controller('PositionTracker', function($scope, $cordovaGeolocation, $ionicLoading, $timeout){
+app.controller('PositionTracker', function($scope, $cordovaGeolocation, dateFilter, $cordovaSQLite, $ionicLoading, $timeout){
     var controller = this;
 
     controller.savePosition = function(position){
+        var formattedDate = dateFilter(new Date(), "dd/MM/yyyy HH:mm:ss");
+        $cordovaSQLite.execute(
+            db,
+            "INSERT INTO positions (latitude, longitude, datetime) VALUES (?, ?, ?)",
+            [position.coords.latitude, position.coords.longitude, formattedDate]
+        )
+
         $scope.Positions.push({
             'datetime': new Date(),
             'latitude': position.coords.latitude,
@@ -43,20 +78,6 @@ app.controller('PositionTracker', function($scope, $cordovaGeolocation, $ionicLo
 
         controller.updatePosition();
 
-    });
-});
-
-
-app.run(function($ionicPlatform) {
-    $ionicPlatform.ready(function() {
-        // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-        // for form inputs)
-        if(window.cordova && window.cordova.plugins.Keyboard) {
-            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-        }
-        if(window.StatusBar) {
-            StatusBar.styleDefault();
-        }
     });
 });
 
