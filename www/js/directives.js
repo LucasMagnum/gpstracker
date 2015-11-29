@@ -1,4 +1,3 @@
-
 app.directive("currentTime", function(dateFilter){
     return function(scope, element, attrs){
         var format = attrs.currentTime;
