@@ -37,3 +37,36 @@ app.factory('PositionsDB', function($cordovaSQLite, dateFilter){
     }
 });
 
+app.factory('PositionService', function($cordovaGeolocation, PositionsDB){
+    var service = this;
+    var positions = [];
+
+    return {
+        Tracker: function(){
+            var options = {timeout: 10000, enableHighAccuracy: true};
+
+            $cordovaGeolocation.getCurrentPosition(options).then(function(position){
+                PositionsDB.insertPosition(position);
+
+                positions.push({
+                    'datetime': new Date(),
+                    'latitude': position.coords.latitude,
+                    'longitude': position.coords.longitude
+                });
+
+                if (positions.length > 15){
+                    /* hack for memory usage */
+                    positions = positions.slice(5, 15);
+                }
+
+            }, function(error){
+                console.log(error);
+            });
+        },
+
+        getPositions: function(){
+            return positions;
+        }
+    }
+
+});

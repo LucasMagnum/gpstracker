@@ -16,44 +16,22 @@ var app = angular.module('gpstracker', ['ionic', 'ngCordova'])
 
 app.controller('GPSTracker', function($scope){
     $scope.CurrentDate = new Date();
-    $scope.Positions = [];
     $scope.RefreshTime = 3 * 1000 * 60; // 3 minutos
 
 });
 
-app.controller('PositionTracker', function($scope, $cordovaGeolocation, $ionicLoading,
-                                           $timeout, PositionsDB){
+app.controller('PositionTracker', function($scope, $ionicLoading, $timeout, PositionService){
     var controller = this;
-
-    controller.savePosition = function(position){
-        PositionsDB.insertPosition(position);
-
-        $scope.Positions.push({
-            'datetime': new Date(),
-            'latitude': position.coords.latitude,
-            'longitude': position.coords.longitude
-        });
-    }
-
-    controller.startTracker = function(){
-        var options = {timeout: 10000, enableHighAccuracy: true};
-
-        $cordovaGeolocation.getCurrentPosition(options).then(function(position){
-            controller.savePosition(position);
-        }, function(error){
-            console.log(error);
-        });
-
-        $scope.startTrackerTimeout = $timeout(controller.startTracker, $scope.RefreshTime);
-    }
-
-    controller.stopTracker = function(){
-        $timeout.cancel($scope.startTrackerTimeout);
-    }
+    var trackerTimeout;
 
     $scope.getPositions = function(){
-        return $scope.Positions.concat().reverse().slice(0, 6);
+        return PositionService.getPositions().concat().reverse().slice(0, 6);
     };
+
+    controller.watch = function(){
+        PositionService.Tracker()
+        var trackerTimeout = $timeout(controller.watch, $scope.RefreshTime);
+    }
 
     ionic.Platform.ready(function(){
         $ionicLoading.show({
@@ -61,6 +39,6 @@ app.controller('PositionTracker', function($scope, $cordovaGeolocation, $ionicLo
             duration: 1000
         });
 
-        controller.startTracker();
+        controller.watch();
     });
 });
