@@ -58,5 +58,17 @@
       </div>
     </ion-content>
 
+
+    <div ng-switch on="isTracking" ng-controller="PositionTracker as tracker">
+      <button ng-switch-default class="bar bar-footer bar-balanced" ng-click="tracker.watch()">
+        <div class="title">Iniciar</div>
+      </button>
+
+      <button ng-switch-when="true" class="bar bar-footer bar-assertive" ng-click="tracker.stopWatch()">
+        <div class="title">Pausar</div>
+      </button>
+
+    </div>
+
   </body>
 </html>

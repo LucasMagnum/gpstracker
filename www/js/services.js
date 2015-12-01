@@ -68,5 +68,4 @@ app.factory('PositionService', function($cordovaGeolocation, PositionsDB){
             return positions;
         }
     }
-
 });

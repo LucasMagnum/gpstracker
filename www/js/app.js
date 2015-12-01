@@ -29,8 +29,15 @@ app.controller('PositionTracker', function($scope, $ionicLoading, $timeout, Posi
     };
 
     controller.watch = function(){
+        $scope.isTracking = true;
+
         PositionService.Tracker()
-        var trackerTimeout = $timeout(controller.watch, $scope.RefreshTime);
+        trackerTimeout = $timeout(controller.watch, $scope.RefreshTime);
+    }
+
+    controller.stopWatch = function(){
+        $timeout.cancel(trackerTimeout);
+        $scope.isTracking = false;
     }
 
     ionic.Platform.ready(function(){
@@ -39,6 +46,5 @@ app.controller('PositionTracker', function($scope, $ionicLoading, $timeout, Posi
             duration: 1000
         });
 
-        controller.watch();
     });
 });
