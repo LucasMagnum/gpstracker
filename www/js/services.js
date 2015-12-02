@@ -37,19 +37,32 @@ app.factory('PositionsDB', function($cordovaSQLite, dateFilter){
     }
 });
 
-app.factory('PositionService', function($cordovaGeolocation, PositionsDB){
+app.factory('PositionService', function($cordovaGeolocation, PositionsDB, dateFilter){
     var service = this;
     var positions = [];
 
     return {
         Tracker: function(){
-            var options = {timeout: 10000, enableHighAccuracy: true};
+            var options = {timeout: 5000, enableHighAccuracy: true};
 
             $cordovaGeolocation.getCurrentPosition(options).then(function(position){
                 PositionsDB.insertPosition(position);
 
+                var datetime = new Date();
+                var formattedDate = dateFilter(datetime, "dd/MM/yyyy HH:mm:ss");
+
+                /* avoid duplicated results */
+                for (var i=0; i<positions.length; i++){
+                    var arrayPosition = positions[i];
+                    if (arrayPosition.formattedDate == formattedDate){
+                        return;
+                    }
+                }
+
+                console.log(datetime);
                 positions.push({
-                    'datetime': new Date(),
+                    'datetime': datetime,
+                    'formattedDate': formattedDate,
                     'latitude': position.coords.latitude,
                     'longitude': position.coords.longitude
                 });
@@ -60,7 +73,7 @@ app.factory('PositionService', function($cordovaGeolocation, PositionsDB){
                 }
 
             }, function(error){
-                console.log(error);
+                console.log('Não foi possivel pegar sua posição');
             });
         },
 

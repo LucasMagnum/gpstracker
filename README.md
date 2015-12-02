@@ -20,6 +20,7 @@ Configurações gerais para versões antigas.
     `bower install`
     `npm install`
     `cordova plugin add https://github.com/litehelpers/Cordova-sqlite-storage.git`
+    `cordova plugin add org.apache.cordova.battery-status`
 
 
 # Instalando APK
@@ -37,6 +38,24 @@ Execute o comando:
 
 Abra o link pelo seu celular, usando o IP do seu computador e escolha a APK gerada e clique em download.
 
+# Executando direto no celular
+
+    * Ative o DEBUG por USB no seu celular
+    * Altere o `/etc/udev/rules.d/50-android.rules`
+        https://raw.githubusercontent.com/NicolasBernaerts/ubuntu-scripts/master/android/51-android.rules
+    * Reinicie o serviço `service udev restart`
+    * Agora seu device ja deve aparecer no `adb devices -l`
+    * Execute o `ionic run android` e seu aplicativo deve iniciar
+
 # Testando no ilab
 
     ionic serve --lab
+
+
+
+# TODO
+
+[x] Salvar Latitude e Longitude
+[x] Iniciar e parar dependendo do USB está conectado
+[ ] Senha para Pausar manualmente
+[ ] Sincronização

@@ -23,6 +23,7 @@ app.controller('GPSTracker', function($scope){
 app.controller('PositionTracker', function($scope, $ionicLoading, $timeout, PositionService){
     var controller = this;
     var trackerTimeout;
+    var batteryIsPluggged = false;
 
     $scope.getPositions = function(){
         return PositionService.getPositions().concat().reverse().slice(0, 6);
@@ -40,11 +41,24 @@ app.controller('PositionTracker', function($scope, $ionicLoading, $timeout, Posi
         $scope.isTracking = false;
     }
 
+    controller.manageTracker = function(batteryStatus){
+        /* if battery was changed status */
+        if (batteryStatus.isPlugged != batteryIsPluggged){
+            if (batteryStatus.isPlugged){
+                controller.watch();
+            } else {
+                controller.stopWatch();
+            }
+        }
+        batteryIsPluggged = batteryStatus.isPlugged;
+    }
+
     ionic.Platform.ready(function(){
         $ionicLoading.show({
             template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Inicializando!',
             duration: 1000
         });
 
+        window.addEventListener("batterystatus", controller.manageTracker, false);
     });
 });
