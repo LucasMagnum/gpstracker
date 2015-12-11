@@ -50,7 +50,7 @@
         </div>
         <div class="row" ng-repeat="position in getPositions()">
           <div class="row">
-            <div class="col">{{ position.datetime|date: "dd/MM/yyyy HH:mm:ss" }}</div>
+            <div class="col">{{ position.formattedDate }}</div>
             <div class="col">{{ position.latitude }}</div>
             <div class="col">{{ position.longitude }}</div>
           </div>

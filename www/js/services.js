@@ -25,46 +25,52 @@ app.factory('PositionsDB', function($cordovaSQLite, dateFilter){
             }
         },
 
-        insertPosition: function(position){
-            var formattedDate = dateFilter(new Date(), "dd/MM/yyyy HH:mm:ss");
-
+        insertPosition: function(datetime, latitude, longitude){
             $cordovaSQLite.execute(
                 db,
                 "INSERT OR REPLACE INTO positions (datetime, latitude, longitude) VALUES (?, ?, ?)",
-                [formattedDate, position.coords.latitude, position.coords.longitude]
+                [datetime, latitude, longitude]
             )
         }
     }
 });
 
 app.factory('PositionService', function($cordovaGeolocation, PositionsDB, dateFilter){
-    var service = this;
     var positions = [];
+
+    function hasDate(formattedDate, positionsArray){
+        /* avoid duplicated results */
+        for (var i=0; i<positionsArray.length; i++){
+            var arrayPosition = positionsArray[i];
+            if (arrayPosition.formattedDate == formattedDate){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     return {
         Tracker: function(){
             var options = {timeout: 5000, enableHighAccuracy: true};
 
             $cordovaGeolocation.getCurrentPosition(options).then(function(position){
-                PositionsDB.insertPosition(position);
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
 
                 var datetime = new Date();
                 var formattedDate = dateFilter(datetime, "dd/MM/yyyy HH:mm:ss");
 
-                /* avoid duplicated results */
-                for (var i=0; i<positions.length; i++){
-                    var arrayPosition = positions[i];
-                    if (arrayPosition.formattedDate == formattedDate){
-                        return;
-                    }
+                if (hasDate(formattedDate, positions)){
+                    return;
                 }
 
-                console.log(datetime);
+                PositionsDB.insertPosition(formattedDate, latitude, longitude);
+
                 positions.push({
-                    'datetime': datetime,
                     'formattedDate': formattedDate,
-                    'latitude': position.coords.latitude,
-                    'longitude': position.coords.longitude
+                    'latitude': latitude,
+                    'longitude': longitude
                 });
 
                 if (positions.length > 15){

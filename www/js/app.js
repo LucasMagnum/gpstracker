@@ -16,7 +16,7 @@ var app = angular.module('gpstracker', ['ionic', 'ngCordova'])
 
 app.controller('GPSTracker', function($scope){
     $scope.CurrentDate = new Date();
-    $scope.RefreshTime = 3 * 1000 * 60; // 3 minutos
+    $scope.RefreshTime = 5 * 1000 * 60; // 5 minutos
 
 });
 

@@ -55,7 +55,7 @@ Abra o link pelo seu celular, usando o IP do seu computador e escolha a APK gera
 
 # TODO
 
-[x] Salvar Latitude e Longitude
-[x] Iniciar e parar dependendo do USB está conectado
-[ ] Senha para Pausar manualmente
-[ ] Sincronização
+    [x] Salvar Latitude e Longitude
+    [x] Iniciar e parar dependendo do USB está conectado
+    [ ] Senha para Pausar manualmente
+    [ ] Sincronização
