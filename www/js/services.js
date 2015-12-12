@@ -49,14 +49,23 @@ app.factory('PositionService', function($cordovaGeolocation, PositionsDB, dateFi
         return false;
     }
 
+    function transformDMS(position){
+        // Return a position in DMS format
+        var D = Math.abs(parseInt(position));
+        var M = parseInt(position * 60 % 60);
+        var S = parseInt(Math.abs(position) * 3600 % 60);
+
+        return D + "° " + M + "' " + S + "\"";
+    }
+
 
     return {
         Tracker: function(){
             var options = {timeout: 5000, enableHighAccuracy: true};
 
             $cordovaGeolocation.getCurrentPosition(options).then(function(position){
-                var latitude = position.coords.latitude;
-                var longitude = position.coords.longitude;
+                var latitude = transformDMS(position.coords.latitude);
+                var longitude = transformDMS(position.coords.longitude);
 
                 var datetime = new Date();
                 var formattedDate = dateFilter(datetime, "dd/MM/yyyy HH:mm:ss");
