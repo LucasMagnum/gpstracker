@@ -1,4 +1,4 @@
-var app = angular.module('gpstracker', ['ionic', 'ngCordova'])
+var app = angular.module('gpstracker', ['ionic', 'ngCordova', 'angular-svg-round-progress'])
     .run(function($ionicPlatform, PositionsDB) {
         $ionicPlatform.ready(function() {
             if(window.cordova && window.cordova.plugins.Keyboard) {
@@ -15,65 +15,73 @@ var app = angular.module('gpstracker', ['ionic', 'ngCordova'])
         });
     });
 
-app.controller('GPSTracker', function($scope){
-    $scope.CurrentDate = new Date();
-    $scope.RefreshTime = 5 * 1000 * 60; // 5 minutos
-
-});
-
-app.controller('PositionTracker', function($scope, $ionicLoading, $timeout, PositionService){
-    var controller = this;
-    var trackerTimeout;
+app.controller('TimeTracker', function($scope, $timeout){
+    // Timer
+    var mytimeout = null; // the current timeoutID
     var batteryIsPluggged = false;
 
-    $scope.getPositions = function(){
-        return PositionService.getPositions().concat().reverse().slice(0, 6);
+    $scope.timeForTimer = 60; // 1 minute
+    $scope.timer = $scope.timeForTimer;
+    $scope.started = false;
+    $scope.paused = false;
+
+    $scope.onTimeout = function() {
+        if ($scope.timer === 0) {
+            $scope.timer = $scope.timeForTimer;
+        }
+        $scope.timer--;
+        mytimeout = $timeout($scope.onTimeout, 1000);
     };
 
-    controller.watch = function(){
-        console.log("Iniciando o watcher");
-        if ($scope.isTracking){
-            return;
+    // Start timer
+    $scope.startTimer = function() {
+        mytimeout = $timeout($scope.onTimeout, 1000);
+        $scope.started = true;
+    };
+
+    // Pauses the timer
+    $scope.pauseTimer = function() {
+        $scope.started = false;
+        $scope.paused = true;
+        $timeout.cancel(mytimeout);
+    };
+
+    // This function helps to display the time in a correct way in the center of the timer
+    $scope.humanizeDurationTimer = function(input, units) {
+        // units is a string with possible values of y, M, w, d, h, m, s, ms
+        if (input == 0) {
+            return 0;
+        } else {
+            var duration = moment().startOf('day').add(input, units);
+            var format = "";
+            if (duration.hour() > 0) {
+                format += "H[h] ";
+            }
+            if (duration.minute() > 0) {
+                format += "m[m] ";
+            }
+            if (duration.second() > 0) {
+                format += "s[s] ";
+            }
+            return duration.format(format);
         }
-        $scope.isTracking = true;
+    };
 
-        console.log("Iniciando o Tracker");
-        PositionService.Tracker()
-        trackerTimeout = $timeout(controller.watch, $scope.RefreshTime);
-    }
-
-    controller.stopWatch = function(){
-        console.log("Parando watcher")
-
-        if (!$scope.isTracking){
-            return;
-        }
-
-        console.log("Cancelando o loop do watcher");
-        $timeout.cancel(trackerTimeout);
-        $scope.isTracking = false;
-    }
-
-    controller.manageTracker = function(batteryStatus){
+    $scope.manageTracker = function(batteryStatus){
         /* if battery was changed status */
         if (batteryStatus.isPlugged != batteryIsPluggged){
             if (batteryStatus.isPlugged){
                 console.log("Bateria conectada, iniciando o watcher");
-                controller.watch();
+                $scope.startTimer();
             } else {
-                console.log("Bateria descconectada, desligando o watcher");
-                controller.stopWatch();
+                console.log("Bateria desconectada, desligando o watcher");
+                $scope.pauseTimer();
             }
         }
         batteryIsPluggged = batteryStatus.isPlugged;
     }
 
     ionic.Platform.ready(function(){
-        $ionicLoading.show({
-            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Inicializando!',
-            duration: 1000
-        });
-
-        window.addEventListener("batterystatus", controller.manageTracker, false);
+        window.addEventListener("batterystatus", $scope.manageTracker, false);
     });
 });

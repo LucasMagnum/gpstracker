@@ -24,51 +24,58 @@
     <!-- your app's js -->
     <script src="js/app.js"></script>
     <script src="js/services.js"></script>
-    <script src="js/directives.js"></script>
 
+    <!-- Moment -->
+    <script src="lib/moment/moment.min.js"></script>
+
+    <!-- rounded progressbar for timer on player -->
+    <script src="lib/angular-svg-round-progressbar/roundProgress.min.js"></script>
   </head>
-  <body ng-app="gpstracker" ng-controller="GPSTracker">
-
+  <body ng-app="gpstracker" ng-controller="TimeTracker">
     <ion-header-bar align-title="center" class="bar-dark">
         <h1 class="title">GPS Tracker</h1>
     </ion-header-bar>
 
-    <ion-content>
-      <div class="row">
-        <div class="col datetime">
-          <div class="time" current-time="HH:mm:ss"></div>
-          <div class="date" current-time="dd/MM/yyyy"></div>
+    <ion-content class="padding">
+
+        <div class="progress-wrapper">
+            <div class="progress">
+                {{humanizeDurationTimer(timer,'s')}}
+            </div>
+          <div round-progress max="timeForTimer" current="timer" clockwise="false" color="#ef473a" rounded="true" class="text-center"></div>
         </div>
-      </div>
-      <div ng-controller="PositionTracker">
-        <div class="row">
-          <div class="row header">
-            <div class="col">Data</div>
-            <div class="col">Latitude</div>
-            <div class="col">Longitude</div>
-          </div>
-        </div>
-        <div class="row" ng-repeat="position in getPositions()">
+
+        <!-- Before starting -->
+        <div ng-if="!started && !paused">
           <div class="row">
-            <div class="col">{{ position.formattedDate }}</div>
-            <div class="col">{{ position.latitude }}</div>
-            <div class="col">{{ position.longitude }}</div>
+            <div class="col">
+              <button class="button button-outline button-balanced button-rounded button-block" ng-click='startTimer()'>
+                Iniciar
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+        <!-- Once it is running -->
+        <div ng-if="started">
+          <div class="row">
+            <div class="col">
+              <button class="button button-outline button-energized button-rounded button-block" ng-click='pauseTimer()'>
+              Pausar
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Once it is paused -->
+        <div ng-if="!started && paused">
+          <div class="row">
+            <div class="col">
+              <button class="button button-outline button-balanced button-rounded button-block" ng-click='startTimer()'>
+                Continuar
+              </button>
+            </div>
+          </div>
+        </div>
+
     </ion-content>
-
-
-    <div ng-switch on="isTracking" ng-controller="PositionTracker as tracker">
-      <button ng-switch-default class="bar bar-footer bar-balanced" ng-click="tracker.watch()">
-        <div class="title">Iniciar</div>
-      </button>
-
-      <button ng-switch-when="true" class="bar bar-footer bar-assertive" ng-click="tracker.stopWatch()">
-        <div class="title">Pausar</div>
-      </button>
-
-    </div>
-
   </body>
 </html>
