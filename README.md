@@ -52,6 +52,14 @@ Abra o link pelo seu celular, usando o IP do seu computador e escolha a APK gera
     ionic serve --lab
 
 
+# Debug no Chrome
+
+    * Tenha o DEBUG ativado por USB
+    * Abra o console do Navegador
+    * Procure por "Inspect Devices"
+    * Encontre o Device na listagem
+    * Clique em "Inspect"
+
 
 # TODO
 

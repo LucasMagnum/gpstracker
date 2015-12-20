@@ -9,6 +9,7 @@ var app = angular.module('gpstracker', ['ionic', 'ngCordova'])
             }
 
             // Initialize DB
+            console.log("Inicializando o banco de dados");
             PositionsDB.initializeDB();
             PositionsDB.initializeTables();
         });
@@ -30,13 +31,25 @@ app.controller('PositionTracker', function($scope, $ionicLoading, $timeout, Posi
     };
 
     controller.watch = function(){
+        console.log("Iniciando o watcher");
+        if ($scope.isTracking){
+            return;
+        }
         $scope.isTracking = true;
 
+        console.log("Iniciando o Tracker");
         PositionService.Tracker()
         trackerTimeout = $timeout(controller.watch, $scope.RefreshTime);
     }
 
     controller.stopWatch = function(){
+        console.log("Parando watcher")
+
+        if (!$scope.isTracking){
+            return;
+        }
+
+        console.log("Cancelando o loop do watcher");
         $timeout.cancel(trackerTimeout);
         $scope.isTracking = false;
     }
@@ -45,8 +58,10 @@ app.controller('PositionTracker', function($scope, $ionicLoading, $timeout, Posi
         /* if battery was changed status */
         if (batteryStatus.isPlugged != batteryIsPluggged){
             if (batteryStatus.isPlugged){
+                console.log("Bateria conectada, iniciando o watcher");
                 controller.watch();
             } else {
+                console.log("Bateria descconectada, desligando o watcher");
                 controller.stopWatch();
             }
         }

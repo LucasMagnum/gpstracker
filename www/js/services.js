@@ -30,7 +30,7 @@ app.factory('PositionsDB', function($cordovaSQLite, dateFilter){
                 db,
                 "INSERT OR REPLACE INTO positions (datetime, latitude, longitude) VALUES (?, ?, ?)",
                 [datetime, latitude, longitude]
-            )
+            );
         }
     }
 });
@@ -61,7 +61,7 @@ app.factory('PositionService', function($cordovaGeolocation, PositionsDB, dateFi
 
     return {
         Tracker: function(){
-            var options = {timeout: 5000, enableHighAccuracy: true};
+            var options = {timeout: 10000, enableHighAccuracy: false};
 
             $cordovaGeolocation.getCurrentPosition(options).then(function(position){
                 var latitude = transformDMS(position.coords.latitude);
