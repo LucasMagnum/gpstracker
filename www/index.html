@@ -49,7 +49,7 @@
         <div ng-if="!started && !paused">
           <div class="row">
             <div class="col">
-              <button class="button button-outline button-balanced button-rounded button-block" ng-click='startTimer()'>
+              <button class="button button-outline button-balanced button-rounded button-block" ng-click='unlockTimer()'>
                 Iniciar
               </button>
             </div>
@@ -59,7 +59,7 @@
         <div ng-if="started">
           <div class="row">
             <div class="col">
-              <button class="button button-outline button-energized button-rounded button-block" ng-click='pauseTimer()'>
+              <button class="button button-outline button-energized button-rounded button-block" ng-click='lockTimer()'>
               Pausar
               </button>
             </div>
@@ -69,7 +69,7 @@
         <div ng-if="!started && paused">
           <div class="row">
             <div class="col">
-              <button class="button button-outline button-balanced button-rounded button-block" ng-click='startTimer()'>
+              <button class="button button-outline button-balanced button-rounded button-block" ng-click='unlockTimer()'>
                 Continuar
               </button>
             </div>

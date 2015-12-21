@@ -15,10 +15,15 @@ var app = angular.module('gpstracker', ['ionic', 'ngCordova', 'angular-svg-round
         });
     });
 
-app.controller('TimeTracker', function($scope, $timeout){
+
+
+app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs){
     // Timer
     var mytimeout = null; // the current timeoutID
     var batteryIsPluggged = false;
+
+    $scope.password = 'gpstracker';
+
 
     $scope.timeForTimer = 60; // 1 minute
     $scope.timer = $scope.timeForTimer;
@@ -65,6 +70,30 @@ app.controller('TimeTracker', function($scope, $timeout){
             }
             return duration.format(format);
         }
+    };
+
+    $scope.passwordDialog = function(msg, callback){
+        $cordovaDialogs.prompt('Senha', msg , ['Cancelar', 'Ok'])
+        .then(function(result) {
+          var passwordValue = result.input1;
+          var btnIndex = result.buttonIndex;
+
+          if (btnIndex == 1) {
+            if (passwordValue != $scope.password){
+                $scope.passwordDialog('Senha incorreta, tente novamente');
+            } else {
+                callback();
+            }
+          }
+        });
+    }
+
+    $scope.unlockTimer = function() {
+        $scope.passwordDialog('Informe sua senha para desbloquear', $scope.startTimer);
+    };
+
+    $scope.lockTimer = function() {
+        $scope.passwordDialog('Informe sua senha para bloquear', $scope.pauseTimer);
     };
 
     $scope.manageTracker = function(batteryStatus){
