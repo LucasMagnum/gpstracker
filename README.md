@@ -21,6 +21,8 @@ Configurações gerais para versões antigas.
     `npm install`
     `cordova plugin add https://github.com/litehelpers/Cordova-sqlite-storage.git`
     `cordova plugin add org.apache.cordova.battery-status`
+    `cordova plugin add org.apache.cordova.dialogs`
+    `cordova plugin add https://github.com/LucasMagnum/cordova-plugin-boot-launcher`
 
 
 # Instalando APK
@@ -65,5 +67,5 @@ Abra o link pelo seu celular, usando o IP do seu computador e escolha a APK gera
 
     [x] Salvar Latitude e Longitude
     [x] Iniciar e parar dependendo do USB está conectado
-    [ ] Senha para Pausar manualmente
+    [x] Senha para Pausar manualmente
     [ ] Sincronização
