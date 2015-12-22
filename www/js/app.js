@@ -17,13 +17,12 @@ var app = angular.module('gpstracker', ['ionic', 'ngCordova', 'angular-svg-round
 
 
 
-app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs){
+app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs, PositionService){
     // Timer
     var mytimeout = null; // the current timeoutID
     var batteryIsPluggged = false;
 
     $scope.password = 'gpstracker';
-
 
     $scope.timeForTimer = 60; // 1 minute
     $scope.timer = $scope.timeForTimer;
@@ -33,6 +32,7 @@ app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs){
     $scope.onTimeout = function() {
         if ($scope.timer === 0) {
             $scope.timer = $scope.timeForTimer;
+            PositionService.Tracker();
         }
         $scope.timer--;
         mytimeout = $timeout($scope.onTimeout, 1000);
@@ -73,14 +73,14 @@ app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs){
     };
 
     $scope.passwordDialog = function(msg, callback){
-        $cordovaDialogs.prompt('Senha', msg , ['Cancelar', 'Ok'])
+        $cordovaDialogs.prompt('Senha', msg , ['Ok', 'Cancelar'])
         .then(function(result) {
           var passwordValue = result.input1;
           var btnIndex = result.buttonIndex;
 
           if (btnIndex == 1) {
             if (passwordValue != $scope.password){
-                $scope.passwordDialog('Senha incorreta, tente novamente');
+                $scope.passwordDialog('Senha incorreta, tente novamente', callback);
             } else {
                 callback();
             }

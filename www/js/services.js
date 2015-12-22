@@ -87,6 +87,8 @@ app.factory('PositionService', function($cordovaGeolocation, PositionsDB, dateFi
                     positions = positions.slice(5, 15);
                 }
 
+                console.log('Localização gravada com sucesso');
+
             }, function(error){
                 console.log('Não foi possivel pegar sua posição');
             });
