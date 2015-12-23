@@ -25,11 +25,14 @@ Configurações gerais para versões antigas.
     `cordova plugin add https://github.com/LucasMagnum/cordova-plugin-boot-launcher`
 
 
+* Para executar o build e servir os arquivos estáticos com a versão do Makefile é preciso
+ter o Go instalado*
+
 # Instalando APK
 
 Faça o build da aplicação:
 
-    ionic build --release android
+    cordova build android
 
 
 # Testando no celular

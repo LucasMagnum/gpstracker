@@ -1,6 +1,10 @@
 android-dev:
 	ionic run android -c -l -s
 
+build-in-android:
+	cordova build android
+	go run app-server.go
+
 devices-list:
 	adb devices -l
 
