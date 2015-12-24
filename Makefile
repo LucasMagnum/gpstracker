@@ -2,7 +2,7 @@ android-dev:
 	ionic run android -c -l -s
 
 build-in-android:
-	cordova build android
+	ionic build android
 	go run app-server.go
 
 devices-list:
