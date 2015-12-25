@@ -45,37 +45,27 @@
           <div round-progress max="timeForTimer" current="timer" clockwise="false" color="#ef473a" rounded="true" class="text-center"></div>
         </div>
 
-        <!-- Before starting -->
-        <div ng-if="!started && !paused">
-          <div class="row">
-            <div class="col">
-              <button class="button button-outline button-balanced button-rounded button-block" ng-click='unlockTimer()'>
-                Iniciar
-              </button>
-            </div>
-          </div>
-        </div>
-        <!-- Once it is running -->
-        <div ng-if="started">
-          <div class="row">
-            <div class="col">
-              <button class="button button-outline button-energized button-rounded button-block" ng-click='lockTimer()'>
-              Pausar
-              </button>
-            </div>
-          </div>
-        </div>
-        <!-- Once it is paused -->
-        <div ng-if="!started && paused">
-          <div class="row">
-            <div class="col">
-              <button class="button button-outline button-balanced button-rounded button-block" ng-click='unlockTimer()'>
-                Continuar
-              </button>
-            </div>
-          </div>
-        </div>
+        <ul class="list">
+          <li class="item item-ava" ng-repeat="position in getPositions()">
+            <h2>{{ position.formattedDate}}</h2>
+            <p>{{ position.latitude }} |  {{ position.longitude }}</p>
+          </li>
+        </ul>
 
     </ion-content>
+
+    <!-- Before starting -->
+    <button ng-if="!started && !paused" class="bar bar-footer bar-balanced" ng-click='unlockTimer()'>
+      <div class="title">Iniciar</div>
+    </button>
+    <!-- Once it is running -->
+    <button ng-if="started" class="bar bar-footer bar-energized" ng-click='lockTimer()'>
+      <div class="title">Pausar</div>
+    </button>
+    <!-- Once it is paused -->
+    <button ng-if="!started && paused" class="bar bar-footer bar-balanced" ng-click='unlockTimer()'>
+      <div class="title">Continuar</div>
+    </button>
+
   </body>
 </html>

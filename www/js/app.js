@@ -33,6 +33,7 @@ app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs, Positi
         if ($scope.timer === 0) {
             $scope.timer = $scope.timeForTimer;
             PositionService.Tracker();
+            console.log('Loop timer');
         }
         $scope.timer--;
         mytimeout = $timeout($scope.onTimeout, 1000);
@@ -40,12 +41,14 @@ app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs, Positi
 
     // Start timer
     $scope.startTimer = function() {
+        console.log('Start timer');
         mytimeout = $timeout($scope.onTimeout, 1000);
         $scope.started = true;
     };
 
     // Pauses the timer
     $scope.pauseTimer = function() {
+        console.log('Pause timer');
         $scope.started = false;
         $scope.paused = true;
         $timeout.cancel(mytimeout);
@@ -100,15 +103,20 @@ app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs, Positi
         /* if battery was changed status */
         if (batteryStatus.isPlugged != batteryIsPluggged){
             if (batteryStatus.isPlugged){
-                console.log("Bateria conectada, iniciando o watcher");
+                console.log("Bateria conectada, iniciando o timer");
                 $scope.startTimer();
             } else {
-                console.log("Bateria desconectada, desligando o watcher");
+                console.log("Bateria desconectada, desligando o timer");
                 $scope.pauseTimer();
             }
         }
         batteryIsPluggged = batteryStatus.isPlugged;
     }
+
+    $scope.getPositions = function(){
+        return PositionService.getPositions().concat().reverse().slice(0, 3);
+    }
+
 
     ionic.Platform.ready(function(){
         window.addEventListener("batterystatus", $scope.manageTracker, false);

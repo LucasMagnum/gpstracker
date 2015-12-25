@@ -31,6 +31,19 @@ app.factory('PositionsDB', function($cordovaSQLite, dateFilter){
                 "INSERT OR REPLACE INTO positions (datetime, latitude, longitude) VALUES (?, ?, ?)",
                 [datetime, latitude, longitude]
             );
+        },
+
+        getPositions: function(positions){
+            if (db){
+                var callback = function(results){
+                    console.log('Test');
+                    console.log('Results', results);
+                }
+                $cordovaSQLite.execute(
+                    db,
+                    "SELECT datetime, latitude, longitude FROM positions"
+                ).then(callback);
+            }
         }
     }
 });
@@ -57,7 +70,6 @@ app.factory('PositionService', function($cordovaGeolocation, PositionsDB, dateFi
 
         return D + "° " + M + "' " + S + "\"";
     }
-
 
     return {
         Tracker: function(){
