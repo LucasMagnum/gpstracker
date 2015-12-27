@@ -9,7 +9,7 @@ devices-list:
 	adb devices -l
 
 lab-mode:
-	ionic serve --lab
+	ionic serve --lab -c -l -s
 
 install:
 	bower install

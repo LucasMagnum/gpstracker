@@ -47,9 +47,9 @@
 
         <ul class="list" ng-click="downloadPositions()">
           <li class="item" ng-repeat="position in getPositions()">
-            <h2>{{ position.formattedDate}}</h2>
+            <h2><i class="ion-clock"></i> {{ position.formattedDate}}</h2>
             <span class="item-note">
-              <i class="ion-android-pin"></i> {{ position.latitude }} |  {{ position.longitude }}
+              <i class="ion-map"></i> {{ position.latitude }} |  {{ position.longitude }}
             </span>
           </li>
         </ul>
