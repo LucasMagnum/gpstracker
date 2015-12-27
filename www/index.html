@@ -45,10 +45,12 @@
           <div round-progress max="timeForTimer" current="timer" clockwise="false" color="#ef473a" rounded="true" class="text-center"></div>
         </div>
 
-        <ul class="list">
-          <li class="item item-ava" ng-repeat="position in getPositions()">
+        <ul class="list" ng-click="downloadPositions()">
+          <li class="item" ng-repeat="position in getPositions()">
             <h2>{{ position.formattedDate}}</h2>
-            <p>{{ position.latitude }} |  {{ position.longitude }}</p>
+            <span class="item-note">
+              <i class="ion-android-pin"></i> {{ position.latitude }} |  {{ position.longitude }}
+            </span>
           </li>
         </ul>
 
@@ -56,15 +58,15 @@
 
     <!-- Before starting -->
     <button ng-if="!started && !paused" class="bar bar-footer bar-balanced" ng-click='unlockTimer()'>
-      <div class="title">Iniciar</div>
+      <div class="title"><i class="ion-unlocked"></i> Iniciar</div>
     </button>
     <!-- Once it is running -->
     <button ng-if="started" class="bar bar-footer bar-energized" ng-click='lockTimer()'>
-      <div class="title">Pausar</div>
+      <div class="title"><i class="ion-locked"></i> Pausar</div>
     </button>
     <!-- Once it is paused -->
     <button ng-if="!started && paused" class="bar bar-footer bar-balanced" ng-click='unlockTimer()'>
-      <div class="title">Continuar</div>
+      <div class="title"><i class="ion-unlocked">Continuar</div>
     </button>
 
   </body>
