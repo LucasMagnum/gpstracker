@@ -57,16 +57,16 @@
     </ion-content>
 
     <!-- Before starting -->
-    <button ng-if="!started && !paused" class="bar bar-footer bar-balanced" ng-click='unlockTimer()'>
-      <div class="title"><i class="ion-unlocked"></i> Iniciar</div>
+    <button ng-if="!started" class="bar bar-footer bar-balanced" ng-click='unlockTimer()'>
+        <div class="title">
+            <i class="ion-unlocked"></i>
+                <span ng-if="!paused">Iniciar</span>
+                <span ng-if="paused">Continuar</span>
+        </div>
     </button>
     <!-- Once it is running -->
     <button ng-if="started" class="bar bar-footer bar-energized" ng-click='lockTimer()'>
       <div class="title"><i class="ion-locked"></i> Pausar</div>
-    </button>
-    <!-- Once it is paused -->
-    <button ng-if="!started && paused" class="bar bar-footer bar-balanced" ng-click='unlockTimer()'>
-      <div class="title"><i class="ion-unlocked">Continuar</div>
     </button>
 
   </body>
