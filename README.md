@@ -4,36 +4,22 @@
 
 # Iniciando o projeto
 
-    ionic startapp <myproject> blank
-    ionic platform add android
+    Faça o clone desse projeto e adicione a plataforma Android
 
-    Atualize com os arquivos do repositório
+        ionic platform add android
+
 
 # Configurações
 
 Configurações gerais para versões antigas.
-    - Alterar api version `android-minSdkVersion` no config.xml
     - Alterar api version `android-minSdkVersion` no android/CordovaLib
 
-# Instalando dependencias
-
-    `bower install`
-    `npm install`
-    `cordova plugin add https://github.com/litehelpers/Cordova-sqlite-storage.git`
-    `cordova plugin add org.apache.cordova.battery-status`
-    `cordova plugin add org.apache.cordova.dialogs`
-    `cordova plugin add https://github.com/LucasMagnum/cordova-plugin-boot-launcher`
-
-
-* Para executar o build e servir os arquivos estáticos com a versão do Makefile é preciso
-ter o Go instalado*
 
 # Instalando APK
 
 Faça o build da aplicação:
 
-    cordova build android
-
+    ionic build android
 
 # Testando no celular
 
@@ -43,23 +29,33 @@ Execute o comando:
 
 Abra o link pelo seu celular, usando o IP do seu computador e escolha a APK gerada e clique em download.
 
+
+Para usar a versão feita em go, execute:
+
+    make build-in-android
+
+* Para executar o build e servir os arquivos estáticos com a versão do Makefile é preciso
+ter o Go instalado*
+
+
 # Executando direto no celular
 
     * Ative o DEBUG por USB no seu celular
     * Altere o `/etc/udev/rules.d/50-android.rules`
         https://raw.githubusercontent.com/NicolasBernaerts/ubuntu-scripts/master/android/51-android.rules
     * Reinicie o serviço `service udev restart`
-    * Agora seu device ja deve aparecer no `adb devices -l`
-    * Execute o `ionic run android` e seu aplicativo deve iniciar
+    * Agora seu device ja deve aparecer no `make devices-list`
+    * Execute o `make android-dev` e seu aplicativo deve iniciar
 
 # Testando no ilab
 
-    ionic serve --lab
+    make lab-mode
 
 
 # Debug no Chrome
 
     * Tenha o DEBUG ativado por USB
+        * Você pode checar com o `make devices-list`
     * Abra o console do Navegador
     * Procure por "Inspect Devices"
     * Encontre o Device na listagem
