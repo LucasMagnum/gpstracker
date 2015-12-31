@@ -1,4 +1,5 @@
-var app = angular.module('gpstracker', ['ionic', 'ngCordova', 'angular-svg-round-progress'])
+
+var app = angular.module('gpstracker', ['ionic','ngCordova', 'angular-svg-round-progress'])
     .run(function($ionicPlatform, PositionsDB) {
         $ionicPlatform.ready(function() {
             if(window.cordova && window.cordova.plugins.Keyboard) {
@@ -15,8 +16,6 @@ var app = angular.module('gpstracker', ['ionic', 'ngCordova', 'angular-svg-round
         });
     });
 
-
-
 app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs, PositionService){
     // Timer
     var mytimeout = null; // the current timeoutID
@@ -24,7 +23,7 @@ app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs, Positi
 
     $scope.password = 'gpstracker';
 
-    $scope.timeForTimer = 60; // 1 minute
+    $scope.timeForTimer = 60 * 3; // 3 minutes
     $scope.timer = $scope.timeForTimer;
     $scope.started = false;
     $scope.paused = false;
@@ -32,7 +31,6 @@ app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs, Positi
     $scope.onTimeout = function() {
         if ($scope.timer === 0) {
             $scope.timer = $scope.timeForTimer;
-            PositionService.Tracker();
             console.log('Loop timer');
         }
         $scope.timer--;
@@ -44,6 +42,7 @@ app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs, Positi
         console.log('Start timer');
         mytimeout = $timeout($scope.onTimeout, 1000);
         $scope.started = true;
+        $scope.bgGeo.start();
     };
 
     // Pauses the timer
@@ -52,6 +51,7 @@ app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs, Positi
         $scope.started = false;
         $scope.paused = true;
         $timeout.cancel(mytimeout);
+        $scope.bgGeo.stop();
     };
 
     // This function helps to display the time in a correct way in the center of the timer
@@ -120,5 +120,37 @@ app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs, Positi
 
     ionic.Platform.ready(function(){
         window.addEventListener("batterystatus", $scope.manageTracker, false);
+
+        var options = {
+            desiredAccuracy: 10,
+            stationaryRadius: 0,
+            distanceFilter: 0,
+
+            notificationIconColor: '#4CAF50',
+            notificationTitle: 'GPSTracker',
+            notificationText: 'Rodando...',
+
+            debug: false, // <-- enable this hear sounds for background-geolocation life-cycle.
+            stopOnTerminate: true, // <-- enable this to clear background location settings when the app terminates
+            interval: $scope.timeForTimer * 1000, // <!-- poll for position every minute
+            fastestInterval: $scope.timeForTimer * 2000
+        };
+
+        var callbackFn = function(location) {
+            console.log('BackgroundGeoLocation success');
+            PositionService.savePosition(location.latitude, location.longitude);
+            $scope.bgGeo.finish();
+        };
+
+        var failureFn = function(error) {
+            console.log('BackgroundGeoLocation error');
+        }
+
+        if (window.plugins && window.plugins.backgroundGeoLocation){
+            console.log('BackgroundGeoLocation iniciando');
+            $scope.bgGeo = window.plugins.backgroundGeoLocation;
+            $scope.bgGeo.configure(callbackFn, failureFn, options);
+        }
+
     });
 });

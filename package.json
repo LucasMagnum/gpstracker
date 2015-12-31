@@ -32,7 +32,8 @@
     {
       "locator": "https://github.com/LucasMagnum/cordova-plugin-boot-launcher",
       "id": "fr.edps.cordova.bootlauncher"
-    }
+    },
+    "cordova-plugin-mauron85-background-geolocation"
   ],
   "cordovaPlatforms": [
     "android"
