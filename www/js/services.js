@@ -18,6 +18,22 @@ function hasDate(formattedDate, positionsArray){
     return false;
 }
 
+function ConvertToCSV(objArray) {
+    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+    var str = '';
+
+    for (var i = 0; i < array.length; i++) {
+        var line = '';
+        for (var index in array[i]) {
+            if (line != '') line += ','
+
+            line += array[i][index];
+        }
+
+        str += line + '\r\n';
+    }
+    return str;
+}
 
 app.factory('PositionsDB', function($cordovaSQLite, dateFilter){
     var db;
@@ -26,6 +42,7 @@ app.factory('PositionsDB', function($cordovaSQLite, dateFilter){
             'fields': ['datetime text primary key', 'latitude text', 'longitude text']
         },
     }
+    var updated = false;
 
     return {
         initializeDB: function(){
@@ -52,14 +69,16 @@ app.factory('PositionsDB', function($cordovaSQLite, dateFilter){
                 "INSERT OR REPLACE INTO positions (datetime, latitude, longitude) VALUES (?, ?, ?)",
                 [datetime, latitude, longitude]
             );
+            updated = false;
         },
 
-        getPositions: function(positions){
-            if (db){
+        getPositions: function(callback){
+            if (db && !updated){
                 $cordovaSQLite.execute(
                     db,
                     "SELECT datetime, latitude, longitude FROM positions"
                 ).then(callback);
+                updated = true;
             }
         }
     }
@@ -97,6 +116,20 @@ app.factory('PositionService', function(PositionsDB, dateFilter){
 
         getPositions: function(){
             return positions;
-        }
+        },
+
+        getAllPositions: function($scope){
+            var callback = function(result){
+                var newPositions = [];
+                for (var i=0; i<result.rows.length; i++){
+                    newPositions.push(result.rows.item(i));
+                }
+                $scope.positions = newPositions;
+            }
+
+            PositionsDB.getPositions(callback);
+        },
+
+        getPositionsCSV: function(){}
     }
 });

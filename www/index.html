@@ -34,43 +34,95 @@
     <script src="lib/angular-svg-round-progressbar/roundProgress.min.js"></script>
   </head>
   <body ng-app="gpstracker" ng-controller="TimeTracker">
-    <ion-header-bar align-title="center" class="bar-dark">
-        <h1 class="title">GPS Tracker</h1>
-    </ion-header-bar>
 
-    <ion-content class="padding">
-
-        <div class="progress-wrapper">
-            <div class="progress">
-                {{humanizeDurationTimer(timer,'s')}}
-            </div>
-          <div round-progress max="timeForTimer" current="timer" clockwise="false" color="#ef473a" rounded="true" class="text-center"></div>
+    <ion-side-menus>
+      <ion-side-menu side="left">
+        <div class="list">
+            <a menu-close class="item" href="#/">Home</a>
+            <a menu-close class="item" href="#/history" ng-click="getAllPositions()">Histórico</a>
+            <a menu-close class="item" href="#" ng-click="exportData()">Download</a>
         </div>
+      </ion-side-menu>
 
-        <ul class="list" ng-click="downloadPositions()">
-          <li class="item" ng-repeat="position in getPositions()">
-            <h2><i class="ion-clock"></i> {{ position.formattedDate}}</h2>
-            <span class="item-note">
-              <i class="ion-map"></i> {{ position.latitude }} |  {{ position.longitude }}
-            </span>
-          </li>
-        </ul>
+      <ion-side-menu-content edge-drag-threshold="true" drag-content="true">
+        <ion-nav-bar align-title="center" class="bar-dark">
+            <ion-nav-title>
+                <h1 class="title">GPS Tracker</h1>
+            </ion-nav-title>
 
-    </ion-content>
+            <ion-nav-back-button class="button-clear">
+              <i class="ion-arrow-left-c"></i> Voltar
+            </ion-nav-back-button>
 
-    <!-- Before starting -->
-    <button ng-if="!started" class="bar bar-footer bar-balanced" ng-click='unlockTimer()'>
-        <div class="title">
-            <i class="ion-unlocked"></i>
-                <span ng-if="!paused">Iniciar</span>
-                <span ng-if="paused">Continuar</span>
-        </div>
-    </button>
+            <ion-nav-buttons>
+                <button menu-toggle="left" class="button button-dark button-icon icon ion-navicon">
+                </button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
 
-    <!-- Once it is running -->
-    <button ng-if="started" class="bar bar-footer bar-energized" ng-click='lockTimer()'>
-      <div class="title"><i class="ion-locked"></i> Pausar</div>
-    </button>
+        <ion-nav-view></ion-nav-view>
+      </ion-side-menu-content>
+
+    </ion-side-menus>
+
+    <script id="home.html" type="text/ng-template">
+        <ion-view>
+            <ion-content class="padding">
+
+                <div class="progress-wrapper">
+                    <div class="progress">
+                        {{humanizeDurationTimer(timer,'s')}}
+                    </div>
+                  <div round-progress max="timeForTimer" current="timer" clockwise="false" color="#ef473a" rounded="true" class="text-center"></div>
+                </div>
+
+                <ul class="list">
+                  <li class="item" ng-repeat="position in getPositions()">
+                    <h2><i class="ion-clock"></i> {{ position.formattedDate}}</h2>
+                    <span class="item-note">
+                      <i class="ion-map"></i> {{ position.latitude }} |  {{ position.longitude }}
+                    </span>
+                  </li>
+                </ul>
+
+            </ion-content>
+
+            <!-- Before starting -->
+            <button ng-if="!started" class="bar bar-footer bar-balanced" ng-click='unlockTimer()'>
+                <div class="title">
+                    <i class="ion-unlocked"></i>
+                        <span ng-if="!paused">Iniciar</span>
+                        <span ng-if="paused">Continuar</span>
+                </div>
+            </button>
+
+            <!-- Once it is running -->
+            <button ng-if="started" class="bar bar-footer bar-energized" ng-click='lockTimer()'>
+              <div class="title"><i class="ion-locked"></i> Pausar</div>
+            </button>
+        </ion-view>
+    </script>
+
+    <script id="history.html" type="text/ng-template">
+        <ion-view>
+            <ion-content class="padding">
+
+                <ul class="list">
+                  <li class="item" ng-repeat="position in positions| orderBy:'-datetime'">
+                    <h2><i class="ion-clock"></i> {{ position.datetime }}</h2>
+                    <span class="item-note">
+                      <i class="ion-map"></i> {{ position.latitude }} |  {{ position.longitude }}
+                    </span>
+                  </li>
+                </ul>
+
+            </ion-content>
+
+            <button class="bar bar-footer bar-energized">
+              <div class="title"><i class="ion-ios-cloud-download"></i> Download</div>
+            </button>
+        </ion-view>
+    </script>
 
   </body>
 </html>
