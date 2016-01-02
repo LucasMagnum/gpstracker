@@ -33,7 +33,11 @@
       "locator": "https://github.com/LucasMagnum/cordova-plugin-boot-launcher",
       "id": "fr.edps.cordova.bootlauncher"
     },
-    "cordova-plugin-mauron85-background-geolocation"
+    "cordova-plugin-mauron85-background-geolocation",
+    {
+      "locator": "https://github.com/katzer/cordova-plugin-email-composer.git",
+      "id": "de.appplant.cordova.plugin.email-composer"
+    }
   ],
   "cordovaPlatforms": [
     "android"

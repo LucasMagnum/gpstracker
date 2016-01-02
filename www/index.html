@@ -38,9 +38,21 @@
     <ion-side-menus>
       <ion-side-menu side="left">
         <div class="list">
-            <a menu-close class="item" href="#/">Home</a>
-            <a menu-close class="item" href="#/history" ng-click="getAllPositions()">Histórico</a>
-            <a menu-close class="item" href="#" ng-click="exportData()">Download</a>
+            <a menu-close class="item item-icon-left" href="#/">
+                <i class="icon ion-home"></i> Home
+            </a>
+            <a menu-close class="item item-icon-left" href="#/history" ng-click="getAllPositions()">
+                <i class="icon ion-map"></i> Histórico
+            </a>
+            <div class="item item-divider">
+                Base de dados
+            </div>
+            <a menu-close class="item item-icon-left" href="#" ng-click="exportData()">
+                <i class="icon ion-email"></i> Exportar
+            </a>
+            <a menu-close class="item item-icon-left" href="#" ng-click="cleanData()">
+                <i class="icon ion-trash-a"></i> Limpar
+            </a>
         </div>
       </ion-side-menu>
 
@@ -117,10 +129,6 @@
                 </ul>
 
             </ion-content>
-
-            <button class="bar bar-footer bar-energized">
-              <div class="title"><i class="ion-ios-cloud-download"></i> Download</div>
-            </button>
         </ion-view>
     </script>
 

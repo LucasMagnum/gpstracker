@@ -1,4 +1,3 @@
-
 var app = angular.module('gpstracker', ['ionic','ngCordova', 'angular-svg-round-progress'])
     .run(function($ionicPlatform, PositionsDB) {
         $ionicPlatform.ready(function() {
@@ -140,7 +139,33 @@ app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs, Positi
     }
 
     $scope.exportData = function(){
-        console.log('Exportar Data');
+        var positionsCSV = PositionService.convertToCSV($scope.positions);
+        var date = new Date();
+
+        cordova.plugins.email.open({
+            to:      '',
+            cc:      '',
+            bcc:     '',
+            subject: 'Date export '+ date,
+            body:    '',
+            attachments: 'base64:export.csv//'+btoa(positionsCSV)
+        });
+    }
+
+    $scope.cleanData = function(){
+        $cordovaDialogs.confirm('Limpar base?', 'Confirmar' , ['Ok', 'Cancelar'])
+        .then(function(buttonIndex){
+          if (buttonIndex == 1) {
+            console.log("Apagando todos os dados");
+            PositionService.deleteAllPositions();
+            $scope.bgGeo.deleteAllLocations();
+            PositionService.getAllPositions($scope, true);
+
+            $cordovaDialogs.alert('Em instantes o histórico será atualizado.', 'Dados apagados');
+          }
+        });
+
+
     }
 
     ionic.Platform.ready(function(){

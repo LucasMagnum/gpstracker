@@ -18,23 +18,6 @@ function hasDate(formattedDate, positionsArray){
     return false;
 }
 
-function ConvertToCSV(objArray) {
-    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-    var str = '';
-
-    for (var i = 0; i < array.length; i++) {
-        var line = '';
-        for (var index in array[i]) {
-            if (line != '') line += ','
-
-            line += array[i][index];
-        }
-
-        str += line + '\r\n';
-    }
-    return str;
-}
-
 app.factory('PositionsDB', function($cordovaSQLite, dateFilter){
     var db;
     var tables = {
@@ -72,13 +55,22 @@ app.factory('PositionsDB', function($cordovaSQLite, dateFilter){
             updated = false;
         },
 
-        getPositions: function(callback){
-            if (db && !updated){
+        getPositions: function(callback, force){
+            if (db && (!updated || force)){
                 $cordovaSQLite.execute(
                     db,
                     "SELECT datetime, latitude, longitude FROM positions"
                 ).then(callback);
                 updated = true;
+            }
+        },
+
+        deleteAllPositions: function(){
+            if (db){
+                $cordovaSQLite.execute(
+                    db,
+                    "DELETE FROM positions"
+                )
             }
         }
     }
@@ -118,7 +110,7 @@ app.factory('PositionService', function(PositionsDB, dateFilter){
             return positions;
         },
 
-        getAllPositions: function($scope){
+        getAllPositions: function($scope, force){
             var callback = function(result){
                 var newPositions = [];
                 for (var i=0; i<result.rows.length; i++){
@@ -127,9 +119,24 @@ app.factory('PositionService', function(PositionsDB, dateFilter){
                 $scope.positions = newPositions;
             }
 
-            PositionsDB.getPositions(callback);
+            PositionsDB.getPositions(callback, force);
         },
 
-        getPositionsCSV: function(){}
+        deleteAllPositions: function(){
+            PositionsDB.deleteAllPositions();
+        },
+
+        convertToCSV: function(positions) {
+            var str = 'data, latitude, longitude\r\n';
+
+            for (var i = 0; i < positions.length; i++) {
+                var position = positions[i];
+                line = position.datetime +", "+position.latitude +", "+ position.longitude;
+                str += line + '\r\n';
+            }
+
+            return str;
+        }
+
     }
 });
