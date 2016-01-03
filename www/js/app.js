@@ -33,7 +33,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
 });
 
 
-app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs, PositionService){
+app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs, PositionService, PositionsDB){
     // Timer
     var mytimeout = null; // the current timeoutID
     var batteryIsPluggged = false;
@@ -139,17 +139,23 @@ app.controller('TimeTracker', function($scope, $timeout, $cordovaDialogs, Positi
     }
 
     $scope.exportData = function(){
-        var positionsCSV = PositionService.convertToCSV($scope.positions);
-        var date = new Date();
+        var callback = function(result){
+            var positions = [];
+            for (var i=0; i<result.rows.length; i++){
+                positions.push(result.rows.item(i));
+            }
 
-        cordova.plugins.email.open({
-            to:      '',
-            cc:      '',
-            bcc:     '',
-            subject: 'Date export '+ date,
-            body:    '',
-            attachments: 'base64:export.csv//'+btoa(positionsCSV)
-        });
+            var positionsCSV = PositionService.convertToCSV(positions);
+            var date = new Date();
+
+            window.plugins.socialsharing.share(
+              null,
+              "Exportar.csv",
+              'data:text/plain;base64,'+btoa(positionsCSV)
+            );
+        }
+
+        PositionsDB.getPositions(callback, true);
     }
 
     $scope.cleanData = function(){

@@ -35,8 +35,8 @@
     },
     "cordova-plugin-mauron85-background-geolocation",
     {
-      "locator": "https://github.com/katzer/cordova-plugin-email-composer.git",
-      "id": "de.appplant.cordova.plugin.email-composer"
+      "locator": "https://github.com/LucasMagnum/SocialSharing",
+      "id": "nl.x-services.plugins.socialsharing"
     }
   ],
   "cordovaPlatforms": [
